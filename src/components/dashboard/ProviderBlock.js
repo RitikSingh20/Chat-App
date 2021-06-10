@@ -29,7 +29,7 @@ const ProviderBlock = () => {
         try{
 
             if(auth.currentUser.providerData.length === 1){
-                throw new Error(`You can not disconnect from $(providerId)`)
+                throw new Error(`You can not disconnect from ${providerId}`)
 
             }
 
