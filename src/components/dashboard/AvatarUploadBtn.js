@@ -1,15 +1,18 @@
-import React, { useState, useModalState , useRef} from "react";
+import React, { useState,   useRef} from "react";
 import { Alert, Button, Modal } from "rsuite";
 import AvatarEditor from 'react-avatar-editor'
 import ModalBody from "rsuite/lib/Modal/ModalBody";
 import ModalFooter from "rsuite/lib/Modal/ModalFooter";
 import { database, storage } from "../../misc/firebase";
 import { useProfile } from '../../context/profile.context';
+import ProfileAvatar from "./ProfileAvatar";
+import { useModalState } from '../../misc/custom-hooks';
+
 
 const fileInputTypes = ".png, .jpeg, .jpg";
 
 const acceptedFilesTypes = ["image/png", "image/jpeg", "image/pjpeg"];
-const isValidFile = (file) => acceptedFilesTypes.includes(file.type);
+const isValidFile = file => acceptedFilesTypes.includes(file.type);
 
 const getBlob = canvas => {
   return new Promise((resolve, reject) => {
@@ -25,11 +28,13 @@ const getBlob = canvas => {
 };
 
 const AvatarUploadBtn = () => {
+
   const { isOpen, open, close } = useModalState();
+
   const { profile } = useProfile();
   const [img, setImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false)
-  const AvatarEditorRef = useRef();
+  const avatarEditorRef = useRef();
 
   const onFileInputChange = (ev) => {
     const currFiles = ev.target.files;
@@ -48,7 +53,7 @@ const AvatarUploadBtn = () => {
   };
 
   const onUploadClick = async () => {
-    const canvas = AvatarEditorRef.current.getImageScaledToCanvas();
+    const canvas = avatarEditorRef.current.getImageScaledToCanvas();
 
     setIsLoading(true);
 
@@ -58,12 +63,12 @@ const AvatarUploadBtn = () => {
       const avatarFileRef = storage.ref(`/profile/${profile.uid}`).child('avatar');
 
       const uploadAvatarResult = await avatarFileRef.put(blob, {
-        cacheControl: `public, max-age=${3600 * 24 * 3}`
+        cacheControl: `public, max-age=${3600 * 24 * 3}`,
       });
 
-      const downloadUrl = uploadAvatarResult.ref.getDownloadURL()
+      const downloadUrl = await uploadAvatarResult.ref.getDownloadURL()
 
-      const userAvatarRef = database.ref(`/profile/${profile.uid}`).child('avatar');
+      const userAvatarRef = database.ref(`/profiles/${profile.uid}`).child('avatar');
 
       userAvatarRef.set(downloadUrl);
       
@@ -82,6 +87,11 @@ const AvatarUploadBtn = () => {
 
   return (
     <div className="mt-3 text-center">
+      <ProfileAvatar
+      src={profile.avatar}
+      name={profile.name}
+      className="width-200 height-200 img-fullsize font-huge"
+      />
       <div>
         <label
           htmlFor="avatar-upload"
@@ -106,7 +116,7 @@ const AvatarUploadBtn = () => {
               {img &&
               
               <AvatarEditor
-              ref={AvatarEditorRef}
+              ref={avatarEditorRef}
               image={img}
               width={200}
               height={200}

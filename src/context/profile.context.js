@@ -1,5 +1,6 @@
 import React, { createContext,useContext,useEffect,useState } from 'react';
 import {auth,database} from '../misc/firebase';
+ 
 
 const ProfileContext = createContext();
 
@@ -16,15 +17,16 @@ export const ProfileProvider = ({ children}) => {
 
               userRef = database.ref(`/profiles/${authObj.uid}`);
               userRef.on('value', snap => {
-                   const  {name, createdAt} = snap.val();
+                   const  {name, createdAt, avatar } = snap.val();
 
                    const data = {
                     name,
-                    createdAt,   
+                    createdAt, 
+                    avatar,  
                     uid: authObj.uid,
                     email: authObj.email,
-
-                };
+                   
+                }; console.log(data)
                setProfile(data);
                setIsLoading(false);
 
