@@ -1,5 +1,6 @@
 import React, { createContext,useContext,useEffect,useState } from 'react';
 import {auth,database} from '../misc/firebase';
+import firebase from 'firebase/app'
  
 
 const ProfileContext = createContext();
@@ -26,9 +27,10 @@ export const ProfileProvider = ({ children}) => {
                     uid: authObj.uid,
                     email: authObj.email,
                    
-                }; console.log(data)
+                };  
                setProfile(data);
                setIsLoading(false);
+            
 
               
                });
