@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import { useMediaQuery } from '../../../misc/custom-hooks';
 import { Icon,ButtonToolbar } from 'rsuite';
 import RoomInfoBtnModal from './RoomInfoBtnModal';
+import EditRoomBtnDrawer from '../top/EditRoomBtnDrawer'
  const Top = () => {
 
     const name = useCurrentRoom(v => v.name);
@@ -18,6 +19,7 @@ import RoomInfoBtnModal from './RoomInfoBtnModal';
              <span className="text-disappear">{name}</span>
           </h4>
           <ButtonToolbar className="ws-nowrap">todo</ButtonToolbar>
+          <EditRoomBtnDrawer />
        </div>
        <div className="d-flex justify-content-between align-items-center">
           <span>todo</span>
